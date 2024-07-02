@@ -1,9 +1,11 @@
 import { test } from '@japa/runner'
-import { fragmentTag } from '../src/tags/fragment.js'
+import { fragmentTag } from '../src/fragment_tag.js'
 import edge from 'edge.js'
+import { enrichRenderer } from '../src/renderer.js'
 
 test.group('fragmentTag', () => {
   edge.registerTag(fragmentTag)
+  edge.onRender(enrichRenderer)
   test('simple extraction works', ({ assert }) => {
     const input = `Before
 @fragment("test")
@@ -14,9 +16,7 @@ After`
     assert.equal(
       result,
       `Before
-<!-- FRAGMENT "test" -->
 Inside
-<!-- FRAGMENT "test" -->
 After`
     )
   })

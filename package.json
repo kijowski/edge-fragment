@@ -1,7 +1,7 @@
 {
-  "name": "adonis-edge-htmx",
+  "name": "edge-fragment",
   "version": "0.1.0-0",
-  "description": "HTMX helpers for the Adonis web server and Edge template engine",
+  "description": "Add ability to render fragments from Edge template engine",
   "type": "module",
   "main": "build/index.js",
   "files": [
@@ -11,9 +11,7 @@
   ],
   "exports": {
     ".": "./build/index.js",
-    ".types": "./build/src/types.js",
-    "./headers": "./build/src/headers.js",
-    "./provider": "./build/src/providers/edge_htmx_provider.js"
+    "./provider": "./build/src/provider.js"
   },
   "engines": {
     "node": ">=18.16.0"
@@ -76,9 +74,7 @@
   "tsup": {
     "entry": [
       "./index.ts",
-      "./src/headers.ts",
-      "./src/types.ts",
-      "./src/providers/edge_htmx_provider.ts"
+      "./src/provider.ts"
     ],
     "outDir": "./build",
     "clean": true,

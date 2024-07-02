@@ -1,64 +1,37 @@
-import { SwapInput, TriggerInput } from './types.js'
+export function extractFragment(content: string, sectionName: string): string {
+  const lines = content.split('\n').map((x) => x.trim())
 
-const fragmentRegex = /<!-- FRAGMENT ".*" -->\s*/g
+  const found = lines.findIndex(
+    (item) =>
+      item.startsWith(`@fragment("${sectionName}")`) ||
+      item.startsWith(`@fragment('${sectionName}')`)
+  )
 
-export function extractFragment(content: string, sectionName: string | undefined): string {
-  if (sectionName === undefined || sectionName === '') {
-    return content.replaceAll(fragmentRegex, '')
+  if (found < 0) {
+    throw new Error(`Fragment ${sectionName} not found`)
   }
-  const parts = content.split(`<!-- FRAGMENT "${sectionName}" -->`)
-  const section = parts[1]
-  if (section === undefined) {
-    throw new Error(`Failed to find ${sectionName}`)
-  }
-  return section.replaceAll(fragmentRegex, '').trim()
-}
-
-export function createSwapHeader(swap: SwapInput): string {
-  let header: string
-  if (typeof swap === 'string') {
-    header = swap
-  } else {
-    const { kind, focusScroll, ...rest } = swap
-    header = `${swap.kind}`
-    Object.entries(rest).forEach(function ([key, value]) {
-      if (value !== undefined) {
-        header += ` ${key}:${value}`
-      }
-    })
-    if (focusScroll !== undefined) {
-      header += ` focus-scroll:${focusScroll}`
+  let endCount = 1
+  let fragmentEnd = -1
+  for (const [i, line] of lines.slice(found + 1).entries()) {
+    const isEnd = line.startsWith('@end')
+    const isSelfClosedComponent = line.startsWith('@!')
+    const isComponent = line.startsWith('@')
+    if (isEnd) {
+      endCount -= 1
+    } else if (isComponent && !isSelfClosedComponent) {
+      endCount += 1
+    }
+    if (endCount === 0) {
+      fragmentEnd = i
+      break
     }
   }
-  return header
-}
-
-export function createTriggerHeader(trigger: TriggerInput, currentHeader?: string): string {
-  if (currentHeader === undefined) {
-    let header: string
-    if (typeof trigger === 'string') {
-      header = trigger
-    } else {
-      header = JSON.stringify(trigger)
-    }
-    return header
+  if (endCount !== 0) {
+    throw new Error('Unbalanced edge template')
   }
-  let headerDict: Record<string, any>
-  try {
-    headerDict = JSON.parse(currentHeader)
-  } catch (e) {
-    headerDict = {}
-    for (const event of currentHeader.split(',')) {
-      headerDict[event.trim()] = {}
-    }
+  if (fragmentEnd === -1) {
+    fragmentEnd = lines.length - 1
   }
 
-  if (typeof trigger === 'string') {
-    for (const event of trigger.split(',')) {
-      headerDict[event.trim()] = {}
-    }
-  } else {
-    headerDict = { ...headerDict, ...trigger }
-  }
-  return JSON.stringify(headerDict)
+  return lines.slice(found + 1, found + fragmentEnd + 1).join('\n')
 }
