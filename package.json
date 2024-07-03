@@ -1,6 +1,6 @@
 {
   "name": "edge-fragment",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Add ability to render fragments from Edge template engine",
   "type": "module",
   "main": "build/index.js",
