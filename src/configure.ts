@@ -4,6 +4,6 @@ export async function configure(command: Configure) {
   const codemods = await command.createCodemods()
 
   await codemods.updateRcFile((rcFile) => {
-    rcFile.addProvider('adonis-edge-htmx/provider')
+    rcFile.addProvider('edge-fragment/provider')
   })
 }
