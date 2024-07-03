@@ -61,12 +61,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kijowski/adonis-edge-htmx.git"
+    "url": "git+https://github.com/kijowski/edge-fragment.git"
   },
   "bugs": {
-    "url": "https://github.com/kijowski/adonis-edge-htmx/issues"
+    "url": "https://github.com/kijowski/edge-fragment/issues"
   },
-  "homepage": "https://github.com/kijowski/adonis-edge-htmx#readme",
+  "homepage": "https://github.com/kijowski/edge-fragment#readme",
   "prettier": "@adonisjs/prettier-config",
   "eslintConfig": {
     "extends": "@adonisjs/eslint-config/package"
